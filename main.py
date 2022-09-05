@@ -5,7 +5,15 @@
 # Main game code
 # -----------------------------------------------
 
-import pygame 
+if __name__ == "__main__":
+    import sys
+    print("Do not run this file!\nRun run_game.py instead!\n")
+    sys.exit()
+
+from models.game import Game
+
 
 def main():
-    print("Hello World!")
+    game = Game()
+    game.on_execute()
+    

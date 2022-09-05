@@ -14,5 +14,5 @@ if sys.version_info[:2] < MIN_VER:
     )
 
 # run game
-from main import main
-main()
+import main
+main.main()
