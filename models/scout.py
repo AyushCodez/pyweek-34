@@ -12,7 +12,7 @@ class Scout():
         self.num+=number
 
     def send(self, index, coords: tuple):
-        #TODO: Animate scout moving from one place to another..
+        #TODO: Animate scout moving from one place to another
         if not(self.active[index]):
             self.loc[index] = coords[:]
             self.active[index] = 1
