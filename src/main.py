@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
 
 import pygame
-from .constants import W, H
+from .utils.constants import W, H
 from .screens import home_screen
 
 class Game:
