@@ -31,6 +31,7 @@ class TextButton:
         # render text and button
         if bg_color:
             pygame.draw.rect(surface, bg_color, (pos[0], pos[1], width, height))
+        
         surface.blit(text_surface, text_rect)
 
     @property
