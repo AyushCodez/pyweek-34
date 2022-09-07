@@ -8,7 +8,11 @@ def run_home_screen(game):
     # Draw screen
     game.display_surface.fill((0,255,255))
     test = buttons.TextButton(game.display_surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "play game")
+
+    war = buttons.TextButton(game.display_surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "screen 2")
     
+
+
     while game.running:
         mouse_down = False
 
@@ -24,9 +28,15 @@ def run_home_screen(game):
                 test.toggle_bg((255,255,255))
                 game.screen = 1 
                 return
-                
         else:
             test.toggle_bg((255,255,255))
+        
+        if war.hovered:
+            war.toggle_bg((0,100,0))
+            if mouse_down:
+                war.toggle_bg((255,255,255))
+                game.screen = 2
+                return
 
         pygame.display.update()
         

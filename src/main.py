@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
 import pygame
 from .utils.constants import W, H
-from .screens import home_screen, map_screen
+from .screens import home_screen, map_screen, war_screen
 
 class Game:
     def __init__(self):
@@ -48,6 +48,8 @@ class Game:
                 home_screen.run_home_screen(self)
             elif self.screen == 1:
                 map_screen.run_map_screen(self)
+            elif self.screen == 2:
+                war_screen.run_war_screen(self)
 
             pygame.display.update()
         

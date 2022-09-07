@@ -1,5 +1,3 @@
-from . import base_soldier
-from . import enemy_base
-from . import outpost
+from . import war_base
 from . import scout
 from . import troop
