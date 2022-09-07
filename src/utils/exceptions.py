@@ -1,0 +1,3 @@
+
+class LoadException(Exception):
+    pass
