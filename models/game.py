@@ -9,7 +9,7 @@ class Game:
         self.size = (self.width, self.height) = (constants.W, constants.H)
         self.screen = None
         self.caption = None
-        # self.icon = pygame.image.load(os.path.join(""))
+        self.icon = None # TODO: implement
  
     def on_init(self):
         pygame.init()
