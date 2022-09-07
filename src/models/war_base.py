@@ -1,8 +1,6 @@
 class WarBase():
 
-    def __init__(self,level):
+    def __init__(self,type, slevel):
         self.level = level
-
-    def get_health(self):
-        self.health = 100 + self.level * 50 # TODO: Change when necessary
-        return self.health
+        self.health = 10000 + (level*504)
+        self.type
