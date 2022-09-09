@@ -1,4 +1,4 @@
-import imp
+import random
 import pygame
 
 from src.utils.load_utils import load_png
@@ -7,9 +7,14 @@ from src.utils.constants import W,H
 from src.models.scout import Scout
 
 def run_map_screen(game):
+
+    metal = 10
+    cleared_areas = []
+    not_cleared_areas = [5,4,7,2,3,1,6,0][::-1]
+    base_locations = [(267*(i%3) + random.random()*(267-64),200*(i//3) + random.random()*(200-64)) for i in range(8)]
     pygame.init()
     # game loop
-    base_coords = (W/2,H/2)
+    base_coords = (W-64,H-64)
     # Draw screen
     Scouts = Scout()
     Scouts.create(2)
@@ -17,14 +22,24 @@ def run_map_screen(game):
     modal_showing = False
     x_btn = None
 
+    scout,scout_size = load_png("scout.png")
+    base,base_size = load_png("base.png")
+    cloud,cloud_size = load_png("clouds.png")
+    enemy_base, enemy_base_size = load_png("enemy_base.png")
+    bg,bg_size = load_png("bg.png")
+    l1 = [load_png("clouds.png")[0]]*8
+    
+    
+
+
+
     def show_modal(title, text, color):
 
         nonlocal modal_showing
         modal_showing = True
-        maj_sur = pygame.Surface((800, 600))
-        maj_sur.set_alpha(180)
-        maj_sur.fill((0,0,0))
-        surface.blit(maj_sur, (0, 0))
+
+        
+        
         text_aaa = pygame.font.Font('freesansbold.ttf', 25).render(title, True, color)
         text_bbb = pygame.font.Font('freesansbold.ttf', 25).render(text, True, (255, 255, 255))
 
@@ -46,6 +61,9 @@ def run_map_screen(game):
 
     while game.running:
 
+        
+
+
         mouse_down = False
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -54,17 +72,30 @@ def run_map_screen(game):
                     mouse_down = True
 
         if not(modal_showing):
-            surface.fill((255,0,255))
-            test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
-            scout,scout_size = load_png("scout.png")
-            base,base_size = load_png("base.png")
+            surface.blit(bg,(0,0))
+            
+            
+            
             surface.blit(base,base_coords)
+            
+            for i in range(len(l1)):
+                if i in cleared_areas:
+                    l1[i].set_alpha(0)
+                    surface.blit(enemy_base,base_locations[i])
+                else: 
+                    l1[i].set_alpha(180)
+                surface.blit(l1[i], (267*(i%3),200*(i//3)))
+
+            test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
             create_scout = buttons.TextButton(surface, (0,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Create Scout")
             send_scout = buttons.TextButton(surface, (100,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Send Scout")
+            mine_metal = buttons.TextButton(surface, (200,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Mine Metal")
+            
             text = pygame.font.Font('freesansbold.ttf', 15).render(f'Available Scouts: {Scouts.active.count(0)}/{Scouts.num}  ', True, (0,0,0), (0,0,255))
             surface.blit(text, (0,0))
-            text = pygame.font.Font('freesansbold.ttf', 15).render(f'Metal left: {10}  ', True, (0,0,0), (0,0,255)) # TODO: Put variable in
+            text = pygame.font.Font('freesansbold.ttf', 15).render(f'Metal left: {metal}  ', True, (0,0,0), (0,0,255)) # TODO: Put variable in
             surface.blit(text, (0,15))
+
                       
 
             if create_scout.hovered:
@@ -72,9 +103,12 @@ def run_map_screen(game):
 
                 if mouse_down:
                     create_scout.toggle_bg((255,255,255))
-                    print("HI")
-                    Scouts.create()
-                    #TODO: use money/metal
+                    if metal>=10:
+                        Scouts.create()
+                        metal-=10
+                    else:
+                        REL_COORDS = show_modal(title='Error!', text=f"Not enough metal!", color=(100, 0, 0))
+                        
                     
             else:
                 test.toggle_bg((255,255,255))
@@ -88,8 +122,18 @@ def run_map_screen(game):
                         ind = Scouts.active.index(0)
                         Scouts.send(ind)
                     else:
-                        REL_COORDS = show_modal(title='Error!', text=f"You not have enough coin!", color=(100, 0, 0))
+                        REL_COORDS = show_modal(title='Error!', text=f"No scouts left!", color=(100, 0, 0))
 
+            else:
+                test.toggle_bg((255,255,255))
+
+            if mine_metal.hovered:
+                mine_metal.toggle_bg((0,100,0))
+
+                if mouse_down:
+                    mine_metal.toggle_bg((255,255,255))
+                    metal+=5
+                    
             else:
                 test.toggle_bg((255,255,255))
 
@@ -104,7 +148,10 @@ def run_map_screen(game):
                     elif Scouts.death_time[i] <=0:
                         print("DIE")
                         Scouts.die(i)
-                    elif Scouts.time_taken[i] >= Scouts.timetofind:
+                    elif Scouts.time_taken[i] >= Scouts.timetofind and len(not_cleared_areas)>0:
+                        a = not_cleared_areas.pop()
+                        cleared_areas.append(a)
+                        
                         print("FOUND")
                         Scouts.reveal(i, (0,0))
 
