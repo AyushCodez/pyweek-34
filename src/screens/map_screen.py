@@ -9,36 +9,35 @@ from src.models.scout import Scout
 def run_map_screen(game):
 
     metal = 10
-    cleared_areas = []
-    not_cleared_areas = [5,4,7,2,3,1,6,0][::-1]
-    base_locations = [(267*(i%3) + random.random()*(267-64),200*(i//3) + random.random()*(200-64)) for i in range(8)]
-    pygame.init()
     # game loop
-    base_coords = (W-64,H-64)
     # Draw screen
     Scouts = Scout()
     Scouts.create(2)
     surface = game.display_surface
     modal_showing = False
+    scout_sending = False
     x_btn = None
 
     scout,scout_size = load_png("scout.png")
-    base,base_size = load_png("base.png")
     cloud,cloud_size = load_png("clouds.png")
     enemy_base, enemy_base_size = load_png("enemy_base.png")
-    bg,bg_size = load_png("bg.png")
-    l1 = [load_png("clouds.png")[0]]*8
-    
-    
+    bg,bg_size = load_png("map_screen_bg.png")
+    dust,dust_size = load_png("dust.png")
+    dust = pygame.transform.scale(dust, (32,32))
+    bg = pygame.transform.scale(bg, (800,600))
+    l1 = [dust]*1200
+    noise = 5
+    l1_loc = [(20*(i%40) + random.randint(-noise,noise),20*(i//40)+ random.randint(-noise,noise)) for i in range(1200)]
+    discovered_areas = []
+    scout_death = False
 
 
 
-    def show_modal(title, text, color):
+    def show_modal(title, text, color, type=1):
 
         nonlocal modal_showing
         modal_showing = True
 
-        
         
         text_aaa = pygame.font.Font('freesansbold.ttf', 25).render(title, True, color)
         text_bbb = pygame.font.Font('freesansbold.ttf', 25).render(text, True, (255, 255, 255))
@@ -61,7 +60,9 @@ def run_map_screen(game):
 
     while game.running:
 
-        
+        if scout_death:
+            REL_COORDS = show_modal(title='Bad News', text=f"Your scout died!", color=(100, 0, 0))
+        scout_death = False
 
 
         mouse_down = False
@@ -72,19 +73,23 @@ def run_map_screen(game):
                     mouse_down = True
 
         if not(modal_showing):
+
+            
+
             surface.blit(bg,(0,0))
             
             
-            
-            surface.blit(base,base_coords)
-            
             for i in range(len(l1)):
-                if i in cleared_areas:
-                    l1[i].set_alpha(0)
-                    surface.blit(enemy_base,base_locations[i])
-                else: 
-                    l1[i].set_alpha(180)
-                surface.blit(l1[i], (267*(i%3),200*(i//3)))
+                l1[i].set_alpha(80)
+                for a in discovered_areas:
+                    b = l1_loc[i]
+                    if ((b[0]-a[0])**2 + (b[1]-a[1])**2)**1/2 <= 3600:
+                        l1[i].set_alpha(0)
+                        #surface.blit(enemy_base,base_locations[i])
+                
+                a = l1_loc[i]
+                if (380-a[0])**2/22500 + (280-a[1])**2/12000 >=1:
+                    surface.blit(l1[i], a)
 
             test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
             create_scout = buttons.TextButton(surface, (0,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Create Scout")
@@ -98,7 +103,7 @@ def run_map_screen(game):
 
                       
 
-            if create_scout.hovered:
+            if create_scout.hovered and not(scout_sending):
                 create_scout.toggle_bg((0,100,0))
 
                 if mouse_down:
@@ -113,21 +118,20 @@ def run_map_screen(game):
             else:
                 test.toggle_bg((255,255,255))
 
-            if send_scout.hovered:
+            if send_scout.hovered and not(scout_sending):
                 send_scout.toggle_bg((0,100,0))
 
                 if mouse_down:
                     send_scout.toggle_bg((255,255,255))
                     if 0 in Scouts.active:
-                        ind = Scouts.active.index(0)
-                        Scouts.send(ind)
+                        scout_sending = True
                     else:
                         REL_COORDS = show_modal(title='Error!', text=f"No scouts left!", color=(100, 0, 0))
 
             else:
                 test.toggle_bg((255,255,255))
 
-            if mine_metal.hovered:
+            if mine_metal.hovered and not(scout_sending):
                 mine_metal.toggle_bg((0,100,0))
 
                 if mouse_down:
@@ -139,21 +143,7 @@ def run_map_screen(game):
 
             
 
-            for i in range(len(Scouts.active)):
-
-                if Scouts.active[i] == 1:
-                    if Scouts.death_time[i]>0 and Scouts.time_taken[i] < Scouts.timetofind:
-                        Scouts.death_time[i]-= 1
-                        Scouts.time_taken[i]+= 1
-                    elif Scouts.death_time[i] <=0:
-                        print("DIE")
-                        Scouts.die(i)
-                    elif Scouts.time_taken[i] >= Scouts.timetofind and len(not_cleared_areas)>0:
-                        a = not_cleared_areas.pop()
-                        cleared_areas.append(a)
-                        
-                        print("FOUND")
-                        Scouts.reveal(i, (0,0))
+            
 
             
             if test.hovered:
@@ -166,13 +156,75 @@ def run_map_screen(game):
                     
             else:
                 test.toggle_bg((255,255,255))
+
+            if scout_sending:
+
+                maj_sur = pygame.Surface((800,600))
+                
+                maj_sur.set_alpha(100)
+                maj_sur.fill((0,0,0))
+                loc = pygame.mouse.get_pos()
+                pygame.draw.circle(maj_sur, (0,100,0), loc, 60, 0)
+                surface.blit(maj_sur,(0,0))
+
+                text = pygame.font.Font('freesansbold.ttf', 20).render(f'Click where you want to send scout', True, (255,255,255))
+                surface.blit(text, (260,10))
+                cancel = buttons.TextButton(surface, (700,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Cancel")
+
+                
+
+                
+
+                if mouse_down:
+                    print("BHDIU@W")
+                    a = loc 
+                    if (380-a[0])**2/40000 + (280-a[1])**2/25454 >1:
+                        for i in discovered_areas:
+                            if ((i[0]-a[0])**2 + (i[1]-a[1])**2)**1/2 <= 8100:
+                                print("Too close1")
+                                break
+                        else:
+                            Scouts.send(loc = loc)
+                            print("Works!")
+                            scout_sending = False
+                    else:
+                        print("Too close2")
+                    
+                
+                
+                if cancel.hovered:
+                    cancel.toggle_bg((0,100,0))
+
+                    if mouse_down:
+                        cancel.toggle_bg((255,255,255))
+                        scout_sending = False
+                
+                
         
-        else:
+        elif modal_showing:
             row, col = pygame.mouse.get_pos()
 
             if REL_COORDS[0] <= row <= REL_COORDS[0] + 30 and REL_COORDS[1] <= col <= REL_COORDS[1] + 30:
                 if mouse_down:
                     modal_showing = False
+        
+
+
+        for i in range(len(Scouts.active)):
+
+                if Scouts.active[i] == 1:
+                    if Scouts.death_time[i]>0 and Scouts.time_taken[i] < Scouts.timetofind:
+                        Scouts.death_time[i]-= 1
+                        Scouts.time_taken[i]+= 1
+                    elif Scouts.death_time[i] <=0:
+                        print("DIE")
+                        scout_death = True
+                        Scouts.die(i)
+                    elif Scouts.time_taken[i] >= Scouts.timetofind:
+                        discovered_areas.append(Scouts.loc[i])
+                        print(discovered_areas)
+                        print("FOUND")
+                        Scouts.reveal(i)
 
         pygame.display.update()
         pygame.time.Clock().tick(60)
