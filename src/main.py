@@ -29,7 +29,7 @@ class Game:
         pygame.init()
         self.display_surface = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self.running = True
-        self.caption = "The Red Planet"
+        self.caption = "Empyrean: The war for independence"
         pygame.display.set_caption(self.caption)
         self.screen = 0
 
