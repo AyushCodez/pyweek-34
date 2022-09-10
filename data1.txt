@@ -1,0 +1,1 @@
+{'metal': 100, 'scouts': 2, 'discovered_areas': [], 'base_locations': [], 'destroyed_bases': [], 'last_beaten_level': 0}

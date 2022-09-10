@@ -30,7 +30,7 @@ def run_war_screen(game):
 
             if mouse_down:
                 test.toggle_bg((255,255,255))
-                game.screen =1
+                game.screen = 1
                 return
                     
         else:
