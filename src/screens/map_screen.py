@@ -9,7 +9,7 @@ import pygame.freetype
 from math import sin,cos,radians
 
 def run_map_screen(game):
-    with open('data.txt','r') as f:
+    with open('data1.txt','r') as f:
         line = f.read()
 
     dic = eval(line)
@@ -114,7 +114,7 @@ def run_map_screen(game):
                         dic['scouts'] = Scouts.num
                         dic['discovered_areas'] = discovered_areas
                         dic['base_locations'] = base_locations
-                        with open("data.txt",'w') as f:
+                        with open("data1.txt",'w') as f:
                             f.write(str(dic))
                         game.screen = 2
                         return
@@ -229,7 +229,7 @@ def run_map_screen(game):
                     dic['scouts'] = Scouts.num
                     dic['discovered_areas'] = discovered_areas
                     dic['base_locations'] = base_locations
-                    with open("data.txt",'w') as f:
+                    with open("data1.txt",'w') as f:
                         f.write(str(dic))
                     test.toggle_bg((255,255,255))
                     game.screen = 0
