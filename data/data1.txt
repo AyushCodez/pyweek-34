@@ -1,0 +1,1 @@
+{'metal': 0, 'scouts': 19, 'mine_level': 1, 'discovered_areas': [(107, 229), (190, 454)], 'base_locations': [(109, 230), (214, 482)], 'destroyed_bases': [], 'last_beaten_level': 0}
