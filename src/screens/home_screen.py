@@ -10,7 +10,7 @@ def run_home_screen(game):
     # Draw screen
     test = buttons.TextButton(game.display_surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "play game")
 
-    war = buttons.TextButton(game.display_surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "screen 2")
+    war = buttons.TextButton(game.display_surface, (500,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "screen 2")
     bg,bg_size = load_png("title_screen.png")
     bg = pygame.transform.scale(bg, (800,600))
 
