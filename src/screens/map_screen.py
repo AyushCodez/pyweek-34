@@ -6,39 +6,13 @@ from ..widgets import buttons
 from src.utils.constants import W,H
 from src.models.scout import Scout
 import pygame.freetype
+from math import sin,cos,radians
 
 def run_map_screen(game):
+    with open('data.txt','r') as f:
+        line = f.read()
 
-    metal = 100
-    metal_needed = 50
-    mine_level = 1
-    # game loop
-    # Draw screen
-    Scouts = Scout()
-    Scouts.create(2)
-    surface = game.display_surface
-    modal_showing = False
-    scout_sending = False
-    x_btn = None
-
-    scout,scout_size = load_png("scout.png")
-    cloud,cloud_size = load_png("clouds.png")
-    enemy_base, enemy_base_size = load_png("enemy_base.png")
-    bg,bg_size = load_png("map_screen_bg.png")
-    dust,dust_size = load_png("dust.png")
-    dust = pygame.transform.scale(dust, (32,32))
-    bg = pygame.transform.scale(bg, (800,600))
-    l1 = [dust]*1200
-    noise = 5
-    l1_loc = [(20*(i%40) + random.randint(-noise,noise),20*(i//40)+ random.randint(-noise,noise)) for i in range(1200)]
-    discovered_areas = []
-    base_locations = []
-    scout_death = False
-    scout_notif_time = 0
-    scout_notif = 0
-
-
-
+    dic = eval(line)
     def show_modal(title, text, color, type=1):
 
         nonlocal modal_showing
@@ -63,6 +37,45 @@ def run_map_screen(game):
         btn_x = W / 2 - 250 + 470
         btn_y = H / 2 - (20 + text_aaa.get_height() + 5 + text_bbb.get_height() + 20) + 0
         return btn_x, btn_y
+
+    def pie(scr,color,center,radius,start_angle,stop_angle):
+        theta=start_angle
+        while theta <= stop_angle:
+            pygame.draw.line(scr,color,center, 
+            (center[0]+radius*cos(radians(theta)),center[1]+radius*sin(radians(theta))),2)
+            theta+=0.01
+
+    metal = dic['metal']
+    metal_needed = 50
+    mine_level = dic['mine_level']
+    # game loop
+    # Draw screen
+    Scouts = Scout()
+    Scouts.create(dic['scouts'])
+    surface = game.display_surface
+    modal_showing = False
+    scout_sending = False
+    x_btn = None
+
+    scout,scout_size = load_png("scout.png")
+    cloud,cloud_size = load_png("clouds.png")
+    enemy_base, enemy_base_size = load_png("enemy_base.png")
+    bg,bg_size = load_png("map_screen_bg.png")
+    dust,dust_size = load_png("dust.png")
+    dust = pygame.transform.scale(dust, (32,32))
+    bg = pygame.transform.scale(bg, (800,600))
+    l1 = [dust]*1200
+    noise = 5
+    l1_loc = [(20*(i%40) + random.randint(-noise,noise),20*(i//40)+ random.randint(-noise,noise)) for i in range(1200)]
+    discovered_areas = dic['discovered_areas']
+    base_locations = dic['base_locations']
+    scout_death = False
+    scout_notif_time = 0
+    scout_notif = 0
+
+
+
+    
 
     while game.running:  
 
@@ -96,6 +109,13 @@ def run_map_screen(game):
                     text = pygame.font.Font('freesansbold.ttf', 25).render('Battle!', True, (0,0,0))
                     surface.blit(text, (i[0],i[1]-25))
                     if mouse_down:
+                        dic['metal'] = metal
+                        dic['mine_level'] = mine_level
+                        dic['scouts'] = Scouts.num
+                        dic['discovered_areas'] = discovered_areas
+                        dic['base_locations'] = base_locations
+                        with open("data.txt",'w') as f:
+                            f.write(str(dic))
                         game.screen = 2
                         return
 
@@ -204,6 +224,13 @@ def run_map_screen(game):
                 test.toggle_bg((0,100,0))
 
                 if mouse_down:
+                    dic['metal'] = metal
+                    dic['mine_level'] = mine_level
+                    dic['scouts'] = Scouts.num
+                    dic['discovered_areas'] = discovered_areas
+                    dic['base_locations'] = base_locations
+                    with open("data.txt",'w') as f:
+                        f.write(str(dic))
                     test.toggle_bg((255,255,255))
                     game.screen = 0
                     return
@@ -228,6 +255,8 @@ def run_map_screen(game):
 
                 if Scouts.active[i] == 1:
                     if Scouts.death_time[i]>0 and Scouts.time_taken[i] < Scouts.timetofind:
+                        pygame.draw.circle(surface, (128,128,128), Scouts.loc[i], 60, 0)
+                        pie(surface,(0,200,0),Scouts.loc[i],60,0,360*(Scouts.time_taken[i]/Scouts.timetofind))
                         Scouts.death_time[i]-= 1
                         Scouts.time_taken[i]+= 1
                     elif Scouts.death_time[i] <=0:
@@ -247,17 +276,17 @@ def run_map_screen(game):
         if scout_notif_time<300:
             if scout_notif == 1:
 
-                ft_font = pygame.freetype.SysFont('Times New Roman', 20)
+                ft_font = pygame.freetype.SysFont('Times New Roman', 25)
 
-                ft_font.render_to(surface, (300,570), 'Your scout died!', (0, 0, 0, (255-(scout_notif_time**2/903))))
+                ft_font.render_to(surface, (300,570), 'Your scout died!', (100, 0, 0, (255-(scout_notif_time**2/903))))
 
                 scout_notif_time+=1
 
             if scout_notif == 2:
 
-                ft_font = pygame.freetype.SysFont('Times New Roman', 20)
+                ft_font = pygame.freetype.SysFont('Times New Roman', 25)
 
-                ft_font.render_to(surface, (300,570), 'Your scout discovered an enemy base!', (0, 0, 0, (255-(scout_notif_time**2/903))))
+                ft_font.render_to(surface, (300,570), 'Your scout discovered an enemy base!', (0, 100, 0, (255-(scout_notif_time**2/903))))
 
                 scout_notif_time+=1
         else:
