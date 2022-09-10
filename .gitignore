@@ -131,4 +131,3 @@ dmypy.json
 workfiles/**
 
 .DS_Store
-data1.txt
