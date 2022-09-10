@@ -8,7 +8,19 @@ from src.models.scout import Scout
 
 def run_war_screen(game):
     pygame.init()
+    surface = game.display_surface
+    bg,bg_size = load_png("war_screen.png")
+    bg = pygame.transform.scale(bg, (800,600))
 
     while game.running:
-        pass
+
+        surface.blit(bg,(0,0))
+
+        mouse_down = False
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    game.running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_down = True
+        pygame.display.update()
 
