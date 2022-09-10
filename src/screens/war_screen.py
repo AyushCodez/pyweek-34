@@ -16,11 +16,26 @@ def run_war_screen(game):
 
         surface.blit(bg,(0,0))
 
+        test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
+
         mouse_down = False
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     game.running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_down = True
+
+        if test.hovered:
+            test.toggle_bg((0,100,0))
+
+            if mouse_down:
+                test.toggle_bg((255,255,255))
+                game.screen =1
+                return
+                    
+        else:
+            test.toggle_bg((255,255,255))
+        
+
         pygame.display.update()
 
