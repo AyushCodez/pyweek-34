@@ -1,1 +1,0 @@
-{'metal': 80, 'scouts': 3, 'discovered_areas': [(166, 281), (650, 415), (68, 584)], 'base_locations': [(187, 276), (601, 399), (53, 529)], 'destroyed_bases': [], 'last_beaten_level': 0}
