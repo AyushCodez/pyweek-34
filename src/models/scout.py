@@ -5,7 +5,7 @@ class Scout():
     def __init__(self):
         self.active = []
         self.num = 0
-        self.timetofind = 60*(5) # frames
+        self.timetofind = 60*(3) # frames
         self.death_time = []
         self.time_taken = []
         self.loc = []
@@ -13,7 +13,7 @@ class Scout():
     def create(self,number = 1):
         for i in range(number):
             self.active.append(0)
-            self.death_time.append(random.randint(self.timetofind//2,int(self.timetofind*1.5)))
+            self.death_time.append(random.randint(self.timetofind//2,int(self.timetofind*1.5)))#TODO lower beggining int when finalise
             self.time_taken.append(0)
             self.loc.append((0,0))
         self.num+=number
