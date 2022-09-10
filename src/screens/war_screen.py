@@ -9,7 +9,7 @@ from src.models.scout import Scout
 def run_war_screen(game):
     pygame.init()
     surface = game.display_surface
-    bg,bg_size = load_png("map_screen_bg.png")
+    bg,bg_size = load_png("war_screen.png")
     bg = pygame.transform.scale(bg, (800,600))
 
     while game.running:
