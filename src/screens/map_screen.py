@@ -47,7 +47,6 @@ def run_map_screen(game):
 
     metal = dic['metal']
     metal_needed = 50
-    mine_level = dic['mine_level']
     # game loop
     # Draw screen
     Scouts = Scout()
@@ -72,12 +71,18 @@ def run_map_screen(game):
     scout_death = False
     scout_notif_time = 0
     scout_notif = 0
+    mine_time = 0
 
 
 
     
 
-    while game.running:  
+    while game.running:
+
+        mine_time+=1
+        if mine_time>30*5:
+            metal+=10
+            mine_time = 0 
 
         mouse_down = False
         for event in pygame.event.get():
@@ -110,10 +115,11 @@ def run_map_screen(game):
                     surface.blit(text, (i[0],i[1]-25))
                     if mouse_down:
                         dic['metal'] = metal
-                        dic['mine_level'] = mine_level
                         dic['scouts'] = Scouts.num
                         dic['discovered_areas'] = discovered_areas
                         dic['base_locations'] = base_locations
+                        
+
                         with open("data1.txt",'w') as f:
                             f.write(str(dic))
                         game.screen = 2
@@ -149,7 +155,7 @@ def run_map_screen(game):
                 surface.blit(maj_sur,(0,0))
 
                 text = pygame.font.Font('freesansbold.ttf', 20).render(f'Click where you want to send scout', True, (255,255,255))
-                surface.blit(text, (260,10))
+                surface.blit(text, (260,30))
                 cancel = buttons.TextButton(surface, (700,570), 90, 20, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 15), "Cancel")
 
                 
@@ -225,7 +231,6 @@ def run_map_screen(game):
 
                 if mouse_down:
                     dic['metal'] = metal
-                    dic['mine_level'] = mine_level
                     dic['scouts'] = Scouts.num
                     dic['discovered_areas'] = discovered_areas
                     dic['base_locations'] = base_locations
@@ -276,17 +281,17 @@ def run_map_screen(game):
         if scout_notif_time<300:
             if scout_notif == 1:
 
-                ft_font = pygame.freetype.SysFont('Times New Roman', 25)
+                ft_font = pygame.freetype.SysFont('freesansbold.ttf', 25)
 
-                ft_font.render_to(surface, (300,570), 'Your scout died!', (100, 0, 0, (255-(scout_notif_time**2/903))))
+                ft_font.render_to(surface, (300,20), 'Your scout died!', (255, 0, 0, (255-(scout_notif_time**2/903))))
 
                 scout_notif_time+=1
 
             if scout_notif == 2:
 
-                ft_font = pygame.freetype.SysFont('Times New Roman', 25)
+                ft_font = pygame.freetype.SysFont('freesansbold.ttf', 25)
 
-                ft_font.render_to(surface, (300,570), 'Your scout discovered an enemy base!', (0, 100, 0, (255-(scout_notif_time**2/903))))
+                ft_font.render_to(surface, (250,10), 'Your scout discovered an enemy base!', (0, 255, 0, (255-(scout_notif_time**2/903))))
 
                 scout_notif_time+=1
         else:
@@ -294,6 +299,6 @@ def run_map_screen(game):
             scout_notif = 0
 
         pygame.display.update()
-        pygame.time.Clock().tick(60)
+        pygame.time.Clock().tick(30)
         
 

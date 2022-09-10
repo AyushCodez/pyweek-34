@@ -36,8 +36,18 @@ class Game:
  
     def execute(self):
         self.on_init()
+        dic = dict()
+        dic['metal'] = 100
+        dic['scouts'] = 2
+        dic['discovered_areas'] = []
+        dic['base_locations'] = []
+        dic['destroyed_bases'] = []
+        dic['last_beaten_level'] = 0
+        with open("data1.txt",'w') as f:
+            f.write(str(dic))   
 
         while( self.running ):
+
             for event in pygame.event.get():
                 # event handling
                 if event.type == pygame.QUIT:
@@ -47,6 +57,7 @@ class Game:
             if self.screen == 0:
                 home_screen.run_home_screen(self)
             elif self.screen == 1:
+                 
                 map_screen.run_map_screen(self)
             elif self.screen == 2:
                 war_screen.run_war_screen(self)
