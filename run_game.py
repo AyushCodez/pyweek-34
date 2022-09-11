@@ -6,6 +6,7 @@
 # -----------------------------------------------
 
 import sys
+import os
 # The major, minor version numbers required
 MIN_VER = (3, 8)
 if sys.version_info[:2] < MIN_VER:
