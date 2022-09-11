@@ -43,7 +43,7 @@ class Game:
         dic['base_locations'] = []
         dic['destroyed_bases'] = []
         dic['last_beaten_level'] = 0
-        with open("data1.txt",'w') as f:
+        with open("data/data1.txt",'w') as f:
             f.write(str(dic))   
 
         while( self.running ):

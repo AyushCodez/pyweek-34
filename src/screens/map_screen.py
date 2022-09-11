@@ -7,8 +7,17 @@ from src.utils.constants import W,H
 from src.models.scout import Scout
 import pygame.freetype
 from math import sin,cos,radians
+from src.utils import music_controller
 
 def run_map_screen(game):
+
+    music_controller.update_volume()
+    music_controller.stop_fx2()
+    music_controller.stop_fx3()
+    music_controller.stop_fx4()
+    music_controller.stop_bg()
+    music_controller.play_map_bg()
+
     with open('data/data1.txt','r') as f:
         line = f.read()
 
