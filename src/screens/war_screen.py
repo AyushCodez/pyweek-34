@@ -18,6 +18,10 @@ def run_war_screen(game):
 
         test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
 
+        base_1 = "";
+        base_2 = "";
+
+
         mouse_down = False
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
