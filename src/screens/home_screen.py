@@ -2,8 +2,17 @@ import pygame
 from ..widgets import buttons
 from src.utils.load_utils import load_png
 from ..utils import constants
+from src.utils import music_controller
 
 def run_home_screen(game):
+
+    music_controller.update_volume()
+    music_controller.stop_fx2()
+    music_controller.stop_fx3()
+    music_controller.stop_fx4()
+    music_controller.stop_bg()
+    music_controller.play_home_bg()
+
     pygame.init()
     
     # game loop

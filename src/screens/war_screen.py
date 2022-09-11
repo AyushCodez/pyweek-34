@@ -5,8 +5,18 @@ import math
 from src.utils.load_utils import load_png
 from ..widgets import buttons
 from src.utils.constants import W,H
+from src.utils import music_controller
+
 
 def run_war_screen(game):
+
+    music_controller.update_volume()
+    music_controller.stop_fx2()
+    music_controller.stop_fx3()
+    music_controller.stop_fx4()
+    music_controller.stop_bg()
+    music_controller.play_war_bg()
+
     pygame.init()
     surface = game.display_surface
     bg,bg_size = load_png("war_screen.png")
