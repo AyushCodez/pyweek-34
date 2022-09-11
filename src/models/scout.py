@@ -19,7 +19,6 @@ class Scout():
         self.num+=number
 
     def send(self,loc):
-        #TODO: Animate scout moving from one place to another
         ind = self.active.index(0)
         if not(self.active[ind]):
             self.active[ind] = 1

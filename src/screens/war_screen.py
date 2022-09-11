@@ -18,8 +18,11 @@ def run_war_screen(game):
 
         test = buttons.TextButton(surface, (400,60), 100, 50, (0,0,0), (255,255,255), pygame.font.SysFont("arial", 20), "go back make map")
 
-        base_1 = "";
-        base_2 = "";
+        base_1, base_1_size = load_png("war_base_good_base.png");
+        base_2, base_2_size = load_png("war_base_bad_base.png");
+
+        surface.blit(base_1, (400,0))
+        surface.blit(base_2, (400,300))
 
 
         mouse_down = False
